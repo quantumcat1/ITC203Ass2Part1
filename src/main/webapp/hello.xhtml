@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<title>ITC 203 Chat Room</title>
+</h:head>
+<h:body>
+	<h1>ITC 203 Chat Room</h1>
+	If you choose a user name that hasn't been used yet, you can input any password.
+	<br/>If you choose a user name that has already been used, you need to input the password that was used last time.
+	<p/><div style="color:#FF0000"><h:outputText escape="false" value="#{userBean.errorMessage}"/></div>
+	<h:form id="login">
+		<h2>User name:</h2>
+		<p:inputText id="name" value="#{userBean.name}"/>
+		<h2>Password:</h2>
+		<p:inputText type="password" id="password" value="#{userBean.password}"/>
+		<p/><p:commandButton ajax="false" type="submit" id="submit" value="Submit" action="#{userBean.startSession()}"/>
+	</h:form>
+
+	</h:body>
+</html>

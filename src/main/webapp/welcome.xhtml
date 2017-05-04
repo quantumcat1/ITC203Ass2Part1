@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<title>JSF 2.0 Hello World</title>
+	<script src="jquery-3.2.1.min.js"></script>
+	<script>
+	function scrollToBottom (id) {
+		   var divs = document.getElementsByClassName(id);
+		   for(var i = 0; i &lt; divs.length; i ++)
+		   {
+		   		var div = divs[i];
+		   		div.scrollTop = div.scrollHeight - div.clientHeight;
+		   }
+		   setTimeout(scrollToBottom(id), 500);
+		}
+	window.onload = function() {
+		  scrollToBottom("chat");
+		};
+	</script>
+
+</h:head>
+<h:body bgcolor="white">
+	<h3>Welcome <h:outputText value="#{userBean.name}"/></h3>
+	<p/>Type "quit" to leave a room (can't leave the lobby).
+	<br/>Type "chat (name)" in the lobby to start a private room with someone (e.g. "chat bob").
+	<br/>Type "chat (name)" in a private room to invite someone to the room.
+	<br/>You may have to refresh to see an invitation or to see the new room once the invitee has accepted.
+	<br/>Type "who" to see a list of users in the room.
+	<p/><h:panelGroup id="invite">
+			<h:form><h:outputText rendered="#{userBean.invitation ne null}" value="#{userBean.invitation.name} #{userBean.invitation.message}"/>
+			<h:commandButton rendered="#{userBean.invitation ne null}" class="yes" type="submit" id="yes" value="Yes" action="#{userBean.acceptInvitation()}"/><h:commandButton rendered="#{userBean.invitation ne null}" value="No" action="#{userBean.declineInvitation()}"/></h:form>
+		</h:panelGroup>
+	<h:form><p:poll interval="1" update=":invite"/></h:form>
+
+	<h:panelGroup id="crs">
+	<c:forEach items="#{userBean.chatRooms}" var="chatRoom" varStatus="var">
+	<h:form><h3><h:outputText value="#{chatRoom.name}"/></h3></h:form>
+	<div class="chat" style="border-style:inset; overflow-y:auto; position:relative; max-height: 200px;">
+		<h:form><h:panelGroup id="pg">
+			<ui:repeat value="#{userBean.getMessages(var.index)}" var="m">
+			<h:outputText style="color:##{m.colour}" value="#{m}"/><br/>
+			</ui:repeat>
+		</h:panelGroup>
+		<p:poll interval="1" update="pg"/></h:form>
+	</div>
+	Enter message:
+		<h:form>
+			Message: <h:inputText class="noupdate" style="color:##{chatRoom.colour}" value="#{chatRoom.tempMessage}"/>
+			<h:commandButton ajax="false" class="submit" type="submit" id="submit" value="Submit" action="#{userBean.addMessage(var.index)}"/>
+			<br/>Colour:
+			<h:form>
+			<h:inputText class="noupdate" style="color:##{chatRoom.colour}" value="#{chatRoom.colour}"/>
+			<h:commandButton ajax="false" class="submit" type="submit" id="submit" value="Test colour"/>
+			</h:form>
+		</h:form>
+	<br/>
+	</c:forEach>
+	</h:panelGroup>
+	<!-- <h:form><p:poll interval="1" update="@(:crs:not(.noupdate))"/></h:form> --> <!-- this causes each chat room to no longer update >:-( -->
+
+
+</h:body>
+</html>
